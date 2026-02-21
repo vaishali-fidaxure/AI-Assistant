@@ -21,7 +21,8 @@ except ImportError:
     st.error("Could not find ingest.py! Make sure it is in your GitHub repository.")
     st.stop()
 # Configuration - must match ingest_documents.py
-CHROMA_DIR = Path("./chroma_db")
+CHROMA_DIR = chromadb.PersistentClient(path="./chroma_db")
+#CHROMA_DIR = Path("./chroma_db")
 if not os.path.exists(CHROMA_DIR):
     st.info("Indexing documents for the first time... this may take a moment.")
     try:
