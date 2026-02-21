@@ -6,15 +6,30 @@ Uses local embeddings (sentence-transformers) and Ollama for the LLM.
 from pathlib import Path
 
 import streamlit as st
+import os
 from langchain_chroma import Chroma
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_ollama import ChatOllama
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
-
+# 1. IMPORT FIRST
+# This tells Python: "When I say run_ingestion, I mean the main() function from ingest.py"
+try:
+    from ingest import main as run_ingestion
+except ImportError:
+    st.error("Could not find ingest.py! Make sure it is in your GitHub repository.")
+    st.stop()
 # Configuration - must match ingest_documents.py
 CHROMA_DIR = Path("./chroma_db")
+if not os.path.exists(CHROMA_DIR):
+    st.info("Indexing documents for the first time... this may take a moment.")
+    try:
+        run_ingestion()  # Now Python knows what this is!
+        st.success("Indexing complete.")
+    except Exception as e:
+        st.error(f"Error during ingestion: {e}")
+        st.stop()
 COLLECTION_NAME = "support_docs"
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 LLM_MODEL = "gemma3:1b"  # use: ollama list to see installed models; ollama pull llama2 to add more
