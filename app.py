@@ -8,6 +8,7 @@ from pathlib import Path
 import streamlit as st
 import os
 from langchain_chroma import Chroma
+import chromadb
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_ollama import ChatOllama
